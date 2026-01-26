@@ -6,9 +6,9 @@ function App() {
   const [count, setCount] = useState(0)
 
   return (
-    <div style={{ background: "#0b1220" }}>
+    <div>
       < PostCard title="this is a title!" content="some content" />
-      This is a page
+      {/* This is a page */}
       <button onClick={() => setCount(count + 1)}> count = {count} </button >
     </div >
   )
