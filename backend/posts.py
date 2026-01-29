@@ -55,3 +55,15 @@ def add_post() -> tuple[Response, int]:
     db.session.add(post)
     db.session.commit()
     return jsonify(post.to_dict()), 201
+
+@posts_bp.route("/<int:id>", methods=["DELETE"])
+def delete_post(id: int):
+    post: Post | None = db.session.get(Post, id)
+    if not post:
+        return jsonify({"error": "post not found"}), 404
+
+    db.session.delete(post)
+    db.session.commit()
+
+    return jsonify({"ok": True}), 200
+

@@ -14,7 +14,9 @@ export default function Ocean() {
       setError(null);
 
       const res = await fetch("/api/posts", { signal });
-      if (!res.ok) throw new Error(`GET /api/posts failed: ${res.status}`);
+      if (!res.ok) {
+        throw new Error(`GET /api/posts failed: ${res.status}`);
+      }
 
       const data: Post[] = await res.json();
       setPosts(data);
@@ -34,11 +36,11 @@ export default function Ocean() {
   }, []);
 
   if (loading) {
-    return <p>Loading...</p>;
+    return <div>Loading...</div>;
   }
 
   if (error) {
-    return <p style={{ color: "tomato" }}>{error}</p>;
+    return <div style={{ color: "tomato" }}>{error}</div>;
   }
 
   return (
