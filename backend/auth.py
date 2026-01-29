@@ -2,6 +2,7 @@ import os
 from flask import Blueprint, jsonify, request, session
 from werkzeug.security import check_password_hash
 
+
 auth_bp = Blueprint("auth", __name__, url_prefix="/api/admin")
 
 ADMIN_PASSWORD_HASH = os.environ.get("ADMIN_PASSWORD_HASH", "")

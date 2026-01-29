@@ -5,6 +5,10 @@ from flask_cors import CORS
 from auth import auth_bp
 from posts import db, posts_bp
 
+from dotenv import load_dotenv
+load_dotenv()
+
+
 app = Flask(__name__)
 app.secret_key = os.environ.get("FLASK_SECRET_KEY", "dev-only-key")
 
