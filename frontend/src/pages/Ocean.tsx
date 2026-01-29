@@ -3,8 +3,6 @@ import PostCard from "../component/PostCard";
 import PostMaker from "../component/PostMaker.tsx"
 import type { Post } from "../types/types.tsx"
 
-
-
 export default function Ocean() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);

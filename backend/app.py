@@ -3,7 +3,14 @@ from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timezone
 from flask_cors import CORS
 
+import os
+from auth import auth_bp
+
 app = Flask(__name__)
+
+app.secret_key = os.environ.get("FLASK_SECRET_KEY", "dev-only-key")
+app.register_blueprint(auth_bp)
+
 app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///test.db"
 db = SQLAlchemy(app)
 
@@ -29,7 +36,6 @@ class Post(db.Model):
             "content": self.content,
             "date_created": self.date_created.isoformat(),
         }
-
 
 @app.route("/api/posts", methods=["GET"])
 def get_all_posts() -> Response:
@@ -57,8 +63,6 @@ def add_post() -> tuple[Response, int]:
     db.session.add(post)
     db.session.commit()
     return jsonify(post.to_dict()), 201
-
-
 
 if __name__ == '__main__':
     with app.app_context():
