@@ -1,48 +1,66 @@
 import { useEffect, useState } from "react";
+import PostCard from "../component/PostCard";
+import PostMaker from "../component/PostMaker.tsx"
+import type { Post } from "../types/types.tsx"
 
-type Post = {
-  id: number;
-  content: string;
-  date_created: string;
-};
+
 
 export default function Ocean() {
   const [posts, setPosts] = useState<Post[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    async function load() {
-      try {
-        setLoading(true);
-        setError(null);
+  async function load(signal?: AbortSignal) {
+    try {
+      setLoading(true);
+      setError(null);
 
-        const res = await fetch("/api/posts");
-        if (!res.ok) throw new Error(`GET /api/posts failed: ${res.status}`);
+      const res = await fetch("/api/posts", { signal });
+      if (!res.ok) throw new Error(`GET /api/posts failed: ${res.status}`);
 
-        const data: Post[] = await res.json();
-        setPosts(data);
-      } catch (e) {
-        setError(e instanceof Error ? e.message : String(e));
-      } finally {
-        setLoading(false);
-      }
+      const data: Post[] = await res.json();
+      setPosts(data);
+    } catch (e) {
+      if (e instanceof DOMException && e.name === "AbortError") return;
+      setError(e instanceof Error ? e.message : String(e));
+    } finally {
+      if (signal?.aborted) return;
+      setLoading(false);
     }
+  }
 
-    load();
+  useEffect(() => {
+    const controller = new AbortController();
+    load(controller.signal);
+    return () => controller.abort();
   }, []);
 
-  if (loading) return <p>Loading...</p>;
-  if (error) return <p style={{ color: "tomato" }}>{error}</p>;
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p style={{ color: "tomato" }}>{error}</p>;
+  }
 
   return (
-    <div>
-      {posts.map((p) => (
-        <div key={p.id}>
-          <p>{p.content}</p>
-          <small>{new Date(p.date_created).toLocaleString()}</small>
-        </div>
-      ))}
+    <div style={{
+      display: "flex"
+    }}>
+
+      <PostMaker onPosted={load} />
+
+      <div style={{
+        display: "flex",
+        gap: "20px"
+      }}>
+        {posts.map((p) => (
+          <div key={p.id}>
+            <PostCard title={p.title} content={p.content} date_created={p.date_created} />
+          </div>
+        ))}
+      </div>
+
     </div>
   );
 }
