@@ -1,10 +1,8 @@
 import { useEffect, useState } from "react";
+import PostCard from "../component/PostCard";
+import type { Post } from "../types/types.tsx"
 
-type Post = {
-  id: number;
-  content: string;
-  date_created: string;
-};
+
 
 export default function Ocean() {
   const [posts, setPosts] = useState<Post[]>([]);
@@ -39,8 +37,7 @@ export default function Ocean() {
     <div>
       {posts.map((p) => (
         <div key={p.id}>
-          <p>{p.content}</p>
-          <small>{new Date(p.date_created).toLocaleString()}</small>
+          <PostCard title={p.title} content={p.content} date_created={p.date_created} />
         </div>
       ))}
     </div>
