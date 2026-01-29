@@ -1,4 +1,3 @@
-# backend/auth.py
 import os
 from flask import Blueprint, jsonify, request, session
 from werkzeug.security import check_password_hash
