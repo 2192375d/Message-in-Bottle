@@ -1,14 +1,30 @@
 import { useState } from "react";
-import type { Post } from "../types/types.tsx"
 
-function HandleSubmission() {
-  //insert code here
+type Props = {
+  onPosted: () => void
 }
 
-export default function PostMaker() {
+export default function PostMaker({ onPosted }: Props) {
 
-  const [title, setTitle] = useState("title");
-  const [content, setContent] = useState("content");
+  const [title, setTitle] = useState("");
+  const [content, setContent] = useState("");
+
+  async function HandleSubmission(e: React.FormEvent) {
+    e.preventDefault();
+    const res = await fetch("/api/posts", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ title, content }),
+    });
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      throw new Error(err.error || `POST /api/posts failed: ${res.status}`);
+    }
+
+    setTitle("")
+    setContent("")
+    onPosted()
+  }
 
   return (
     <div style={{
@@ -21,12 +37,17 @@ export default function PostMaker() {
       borderRadius: "14px",
 
     }}>
+
       <h1>Create a Post</h1>
       <form
-        style={{}}
+        onSubmit={HandleSubmission}
       >
 
-        <input type='text' value={title} onChange={(e) => setTitle(e.target.value)} />
+        <input type='text'
+          value={title}
+          onChange={(e) => setTitle(e.target.value)}
+          placeholder="title"
+        />
         <textarea
           value={content}
           onChange={(e) => setContent(e.target.value)}
@@ -34,7 +55,7 @@ export default function PostMaker() {
           style={{
             width: "100%",
             height: "300px",
-            resize: "none",      // optional: prevent manual resizing
+            resize: "none",
             padding: "10px",
             marginTop: "20px",
             boxSizing: "border-box",
@@ -43,7 +64,6 @@ export default function PostMaker() {
         />
         <button
           type="submit"
-          onClick={HandleSubmission}
           style={{
             marginTop: "20px"
           }}>

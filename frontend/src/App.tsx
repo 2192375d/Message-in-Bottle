@@ -8,13 +8,8 @@ function App() {
 
   return (
 
-    <div style={{
-      display: "flex"
-    }}>
-      <PostMaker />
 
-      <AppRoutes />
-    </div>
+    <AppRoutes />
   )
 }
 
