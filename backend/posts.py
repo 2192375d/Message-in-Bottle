@@ -66,3 +66,4 @@ def delete_post(id: int):
     db.session.commit()
 
     return jsonify({"ok": True}), 200
+
